@@ -72,11 +72,11 @@ def spu_map_sku(df):
     return df
 
 
-if __name__ == '__main__':
-    findSameSkuLogger.info('hallo word')
-    # df = pd.read_excel("spu_map_sku_result.xlsx")
-    # # df = spu_map_sku(df)
-    # write_to_mysql(df, 'append')
+# if __name__ == '__main__':
+#     findSameSkuLogger.info('hallo word')
+#     df = pd.read_excel("model/simi_result_tfidf_simi_price_p9_14_55_66.xlsx")
+#     df = spu_map_sku(df)
+#     write_to_mysql(df)
 
 
 

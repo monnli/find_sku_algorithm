@@ -5,7 +5,7 @@ import pymysql
 from datetime import datetime
 import numpy as np
 
-from config import debug
+from config import debug, findSameSkuLogger
 
 
 def write_to_mysql(df):
@@ -16,11 +16,13 @@ def write_to_mysql(df):
 
     df['create_time'] = np.array([now_date for _ in range(df.shape[0])])
     df['update_time'] = np.array([now_date for _ in range(df.shape[0])])
-
-    if debug:
-        df.to_sql(name='voila_similarity_table_test', con=engine, if_exists="append", index=False)
-    else:
-        df.to_sql(name='voila_similarity_table_bak', con=engine, if_exists='append', index=False)
+    try:
+        if debug:
+            df.to_sql(name='voila_similarity_table_test', con=engine, if_exists="append", index=False)
+        else:
+            df.to_sql(name='voila_similarity_table_bak', con=engine, if_exists='append', index=False)
+    except Exception as e:
+        findSameSkuLogger.info(f"write_to_mysql exception: {e}")
 
 
 def query_data(sql):
