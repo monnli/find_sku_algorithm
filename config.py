@@ -12,7 +12,7 @@ if debug:
     # base_dir = os.path.join(os.path.join(base_dir, 'logs'))
     base_dir = os.path.split(os.path.realpath(__file__))[0]
 else:
-    base_dir = '/data/logs'
+    base_dir = 'find_sku_algorithm/data/logs'
 
 recent_ndays = 14
 
@@ -21,7 +21,7 @@ if debug:
         "C:\\Users\\29678\\Desktop\\voila_china\\find_same_sku_algorithm\\standardBrandName.csv",
         encoding='utf-8-sig')
 else:
-    normal_brand_names = pd.read_csv("standardBrandName.csv", encoding='utf-8-sig')
+    normal_brand_names = pd.read_csv("find_sku_algorithm/standardBrandName.csv", encoding='utf-8-sig')
 
 
 query_sentence = [{"stdSubCateName": "Clothing", "stdSubCate2Name": "Coats & Jackets"},
@@ -82,7 +82,7 @@ LOGGING_CONF = {
         'find_same_sku': {
             'level': 'INFO',
             'class': 'logging.FileHandler',
-            'filename': os.path.join(base_dir, 'find_same_sku.log'),
+            'filename': os.path.join(base_dir, 'find_sku_algorithm.log'),
             'formatter': 'verbose',
         },
 
