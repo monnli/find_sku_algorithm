@@ -6,19 +6,19 @@ import pymysql
 
 import os
 
-debug = False
+debug = True
 
 if debug:
     # base_dir = os.path.join(os.path.join(base_dir, 'logs'))
     base_dir = os.path.split(os.path.realpath(__file__))[0]
 else:
-    base_dir = 'find_sku_algorithm/data/logs'
+    base_dir = '/data/limeng/logs'
 
 recent_ndays = 14
 
 if debug:
     normal_brand_names = pd.read_csv(
-        "C:\\Users\\29678\\Desktop\\voila_china\\find_same_sku_algorithm\\standardBrandName.csv",
+        "C:\\Users\\29678\\Desktop\\voila_china\\find_sku_algorithm\\standardBrandName.csv",
         encoding='utf-8-sig')
 else:
     normal_brand_names = pd.read_csv("find_sku_algorithm/standardBrandName.csv", encoding='utf-8-sig')
@@ -79,7 +79,7 @@ LOGGING_CONF = {
         },
     },
     'handlers': {
-        'find_same_sku': {
+        'find_sku_algorithm': {
             'level': 'INFO',
             'class': 'logging.FileHandler',
             'filename': os.path.join(base_dir, 'find_sku_algorithm.log'),
@@ -88,8 +88,8 @@ LOGGING_CONF = {
 
     },
     'loggers': {
-        'find_same_sku': {
-            'handlers': ['find_same_sku'],
+        'find_sku_algorithm': {
+            'handlers': ['find_sku_algorithm'],
             'level': 'INFO',
             'propagate': True,
         },
