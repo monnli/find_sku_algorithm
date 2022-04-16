@@ -6,7 +6,7 @@ import pymysql
 
 import os
 
-debug = True
+debug = False
 
 if debug:
     # base_dir = os.path.join(os.path.join(base_dir, 'logs'))
