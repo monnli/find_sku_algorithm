@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from sqlalchemy import create_engine
+import pymysql
 from datetime import datetime
 import numpy as np
 
@@ -19,7 +20,31 @@ def write_to_mysql(df):
     if debug:
         df.to_sql(name='voila_similarity_table_test', con=engine, if_exists="append", index=False)
     else:
-        df.to_sql(name='voila_similarity_table', con=engine, if_exists='replace', index=False)
+        df.to_sql(name='voila_similarity_table_bak', con=engine, if_exists='append', index=False)
+
+
+def query_data(sql):
+    connection = pymysql.connect(
+        host='172.31.141.244',
+        port=31545,
+        user='similarity',
+        password='ye6Iep8S',
+        db='voila_similarity'
+    )
+    try:
+        with connection.cursor() as cursor:
+            count = cursor.execute(sql)  # 影响的行数
+            print(count)
+            result = cursor.fetchall()  # 取出所有行
+
+            for i in result:  # 打印结果
+                print(i)
+            connection.commit()  # 提交事务
+    except:
+        connection.rollback()  # 若出错了，则回滚
+    finally:
+        cursor.close()
+        connection.close()
 
 
 # if __name__ == '__main__':

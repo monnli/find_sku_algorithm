@@ -4,7 +4,7 @@ from multiprocessing import Pool
 from model.tf_idf import CalculateSimi
 import pymongo
 from config import *
-from read_write_mysql import write_to_mysql
+from read_write_mysql import write_to_mysql, query_data
 from spu_map_sku import spu_map_sku
 import pandas as pd
 
@@ -25,7 +25,7 @@ def multiprocessing_calculate(batch, sub_query_sql_list):
         count = 0
         for rs in result_list:
             df = spu_map_sku(rs.get())
-            df.to_csv(f'result_{count}.csv') # 由于此步计算大，避免下游任务出错中断程序时，能快速恢复结果
+            df.to_csv(f'/data/limeng/result_{batch}_{count}.csv') # 由于此步计算大，避免下游任务出错中断程序时，能快速恢复结果
             write_to_mysql(df)
             count += 1
             findSameSkuLogger.info(f"successfully write to tibd: |batch:{batch} | time:{count}")
@@ -37,6 +37,9 @@ def multiprocessing_calculate(batch, sub_query_sql_list):
 
 
 def main():
+    # 清空备份表，稍后写入备份表，最后把备份表修改为主表——完成表的迅速切换，不影响线上业务
+    query_data("truncate table voila_similarity_table_bak")
+
     database = pymongo.MongoClient(connection_string).get_database()
     # 数据表
     coll = database.get_collection('spu')
@@ -76,11 +79,17 @@ def main():
 
     findSameSkuLogger.info('all batches was successfully finished task !!!')
 
+    findSameSkuLogger.info('*******start to change xxx_table_bak into xxx_table*******')
+    # the first, to change the xxx_table into the xxx_table_bak2
+    query_data("alter table voila_similarity_table rename to voila_similarity_table_bak2")
+    # the second, to change the xxx_table_bak into the xxx_table
+    query_data("alter table voila_similarity_table_bak rename to voila_similarity_table")
+    # finally, to change the xxx_table_bak2 into the xxx_table_bak
+    query_data("alter table voila_similarity_table_bak2 rename to voila_similarity_table_bak")
+
 
 if __name__ == '__main__':
     main()
-
-
 
     # cs = CalculateSimi()
     # pool = Pool(15)
