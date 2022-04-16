@@ -10,6 +10,7 @@ import pandas as pd
 
 
 def multiprocessing_calculate(batch, sub_query_sql_list):
+    findSameSkuLogger.info(f'==============batch: {batch} start =============')
     query_sql = " "  # 便于报错时的异常输出
     try:
         cs = CalculateSimi()
@@ -49,8 +50,9 @@ def main():
 
     findSameSkuLogger.info("******************start multiprocessing****************")
 
+    length = df.shape[0]
     query_sql_list = list()
-    for i in range(1):
+    for i in range(length):
         one_name = df.iloc[i, 0]
         two_name = df.iloc[i, 1]
         three_name = df.iloc[i, 2]
@@ -60,7 +62,6 @@ def main():
                       'stdCateName': 1, 'stdSubCateName': 1, 'stdSubCate2Name': 1, 'brandName': 1, 'updatedUtc': 1}]
         query_sql_list.append(query_sql)
 
-    length = df.shape[0]
     integer = length // 15 # 代表15个进程
 
     three_category_num = 0
