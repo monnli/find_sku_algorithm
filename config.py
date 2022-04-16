@@ -6,7 +6,7 @@ import pymysql
 
 import os
 
-debug = True
+debug = False
 
 if debug:
     # base_dir = os.path.join(os.path.join(base_dir, 'logs'))
@@ -16,13 +16,16 @@ else:
 
 recent_ndays = 14
 
-# normal_brand_names = pd.read_csv("standardBrandName.csv", encoding='utf-8-sig')
-normal_brand_names = pd.read_csv(
-    "C:\\Users\\29678\\Desktop\\voila_china\\find_same_sku_algorithm\\standardBrandName.csv",
-    encoding='utf-8-sig')
+if debug:
+    normal_brand_names = pd.read_csv(
+        "C:\\Users\\29678\\Desktop\\voila_china\\find_same_sku_algorithm\\standardBrandName.csv",
+        encoding='utf-8-sig')
+else:
+    normal_brand_names = pd.read_csv("standardBrandName.csv", encoding='utf-8-sig')
+
 
 query_sentence = [{"stdSubCateName": "Clothing", "stdSubCate2Name": "Coats & Jackets"},
-                  {"_id": 0, 'spuId': 1, 'siteId': 1, 'title': 1, 'canonicalUrl': 1, 'maxMsrp': 1, 'siteName': 1,
+                  {"_id": 0, 'spuId': 1, 'title': 1, 'canonicalUrl': 1, 'maxMsrp': 1, 'siteName': 1,
                    'stdCateName': 1, 'stdSubCateName': 1, 'stdSubCate2Name': 1, 'brandName': 1, 'updatedUtc': 1}]
 
 # 标题与价格的权重
@@ -95,7 +98,7 @@ LOGGING_CONF = {
 
 logging.config.dictConfig(LOGGING_CONF)
 
-findSameSkuLogger = logging.getLogger('find_same_sku')
+findSameSkuLogger = logging.getLogger('find_sku_algorithm')
 
 
 

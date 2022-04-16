@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 import numpy as np
-import pandas as pd
 import pymongo
-import pymysql
 from read_write_mysql import write_to_mysql
 from config import *
 from config import sku_table_name

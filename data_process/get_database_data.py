@@ -3,8 +3,6 @@
 import pandas as pd
 import pymongo
 from config import connection_string
-import time
-from config import recent_ndays
 
 def get_mongodb_data(table_name, query_sentence):
     # 连接mongodb数据库

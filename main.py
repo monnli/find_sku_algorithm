@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from multiprocessing import Pool
-import time
 from model.tf_idf import CalculateSimi
-import pandas as pd
 import pymongo
 from config import *
 from read_write_mysql import write_to_mysql
@@ -32,22 +30,21 @@ def main():
 
     findSameSkuLogger.info("******************start multiprocessing****************")
 
-    pool = Pool(20)
+    pool = Pool(15)
     result_list = list()
 
     if debug:
         epoch = 2
     else:
-        epoch = df.shape[0]
+        epoch = 15
 
-    # for i in range(epoch):
-    for i in range(1):
+    for i in range(epoch):
         stdCateName = df.iloc[i, 0]
         stdSubCateName = df.iloc[i, 1]
         stdSubCate2Name = df.iloc[i, 2]
 
         query_sql = [{"stdCateName": stdCateName, "stdSubCateName": stdSubCateName, "stdSubCate2Name": stdSubCate2Name},
-                     {"_id": 0, 'spuId': 1, 'siteId': 1, 'title': 1, 'canonicalUrl': 1, 'maxMsrp': 1, 'siteName': 1,
+                     {"_id": 0, 'spuId': 1, 'title': 1, 'canonicalUrl': 1, 'maxMsrp': 1, 'siteName': 1,
                       'stdCateName': 1, 'stdSubCateName': 1, 'stdSubCate2Name': 1, 'brandName': 1, 'updatedUtc': 1}]
         result = pool.apply_async(cs.three_cate_simi, (query_sql,))
         result_list.append(result)

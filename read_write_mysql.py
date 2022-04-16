@@ -22,8 +22,8 @@ def write_to_mysql(df):
         df.to_sql(name='voila_similarity_table', con=engine, if_exists='replace', index=False)
 
 
-if __name__ == '__main__':
-    debug = False
-    import pandas as pd
-    df = pd.read_excel("C:\\Users\\29678\\Desktop\\voila_similarity_table.xls")
-    write_to_mysql(df)
+# if __name__ == '__main__':
+#     debug = False
+#     import pandas as pd
+#     df = pd.read_excel("C:\\Users\\29678\\Desktop\\voila_similarity_table.xls")
+#     write_to_mysql(df)

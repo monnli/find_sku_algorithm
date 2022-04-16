@@ -36,6 +36,7 @@ def tfidf_cosin_simi(sub_df, tfidf_model, dictionary, query_text):
     except Exception as e:
         findSameSkuLogger.info(e)
         findSameSkuLogger.info(f"query_text: {query_text}")
+        sims = [0 for _ in range(sub_df.shape[0])]
     
     return sims
 
@@ -43,7 +44,8 @@ def tfidf_cosin_simi(sub_df, tfidf_model, dictionary, query_text):
 class CalculateSimi(object):
     def __init__(self, ):
         pass
-    def three_cate_simi(self,query_sentence):
+
+    def three_cate_simi(self, query_sentence):
         # 计算14天前的节点日期date_point
         findSameSkuLogger.info(f"query_sentence: {query_sentence}")
         date_point = pd.datetime.datetime.now().date() - dt.timedelta(recent_ndays)
@@ -53,9 +55,10 @@ class CalculateSimi(object):
         product_data, product_full_data = process_title_data(product_data, normal_brand_names)
         tfidf_model, dictionary = train_tfidf(product_data)
 
-        # df = product_full_data.iloc[4500:10000, :]
         df = copy.deepcopy(product_full_data)
         del product_full_data
+        del product_data
+
         df['updatedUtc'] = df.apply(lambda x: pd.to_datetime(int(x["updatedUtc"]), unit='s'), axis=1)
         df['updatedUtc'] = df.apply(lambda x: (x["updatedUtc"]).date(), axis=1)
 
@@ -128,25 +131,15 @@ class CalculateSimi(object):
                             tfidf_simi_score = v
 
                     if (max_score >= threshold) and (price_score >= 0.9) and (tfidf_simi_score >= 0.9):
-                        # 找到的这一款是查询的这一款的最相似款，但找到的这一款本做为查询时，可能找到与它更相似的款，因此不能同时把找的这一款也标记为不再计算。
-                        # df.loc[max_score_row_index, 'score'] = max_score
-                        # is_cal_tag更新为1，表示已经计算过了，不再加入计算
-                        # df.loc[max_score_row_index, 'is_cal_tag'] = 1
-
                         df.loc[row_index, 'score'] = max_score
                         df.loc[row_index, 'is_cal_tag'] = 1
-
                         sub_df = sub_df.loc[max_score_row_index, ['spuId', 'raw_title', 'title', 'canonicalUrl']]
-
                         spuId2 = sub_df['spuId']
                         df.loc[row_index, 'spuId2'] = spuId2
-
                         raw_title2 = sub_df['raw_title']
                         df.loc[row_index, 'raw_title2'] = raw_title2
-
                         title2 = sub_df['title']
                         df.loc[row_index, 'title2'] = json.dumps(title2)
-
                         canonicalUrl2 = sub_df['canonicalUrl']
                         df.loc[row_index, 'canonicalUrl2'] = canonicalUrl2
 
@@ -166,8 +159,6 @@ class CalculateSimi(object):
 
 
 if __name__ == '__main__':
-    normal_brand_names = pd.read_csv("C:\\Users\\29678\\Desktop\\voila_china\\find_same_sku_algorithm\\standardBrandName.csv",
-                                     encoding='utf-8-sig')
 
     query_sentence = [{"stdSubCateName": "Clothing", "stdSubCate2Name": "Coats & Jackets"},
                       {"_id": 0, 'spuId': 1, 'siteId': 1, 'title': 1, 'canonicalUrl': 1, 'maxMsrp': 1, 'siteName': 1,

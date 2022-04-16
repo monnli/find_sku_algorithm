@@ -3,13 +3,10 @@
 import nltk
 from nltk.stem import *
 from nltk.corpus import stopwords
-import pandas as pd
-import numpy as np
-from sklearn.metrics.pairwise import cosine_similarity
-from config import unwant_antonym_array, unwant_confusion_word
-from config import brand_path
+
+from config import unwant_confusion_word
 from config import delete_digits, process_stemmer
-from config import spu_table_name, sku_table_name
+from config import spu_table_name
 from config import colors
 import copy
 
