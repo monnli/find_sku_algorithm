@@ -62,7 +62,7 @@ def spu_map_sku(df):
             else:
                 continue
         except Exception as e:
-            findSameSkuLogger(e)
+            findSameSkuLogger.info(e)
 
     df = pd.DataFrame(result_dict)
     col_name = ["query_id", "result_id", "weighted_score", "title_score", "query_url",
