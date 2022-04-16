@@ -70,7 +70,7 @@ def main():
         if batch == integer - 1:
             sub_query_sql_list = query_sql_list[three_category_num:]
         else:
-            sub_query_sql_list = query_sql_list[start_index:sum]
+            sub_query_sql_list = query_sql_list[start_index:three_category_num]
         multiprocessing_calculate(batch, sub_query_sql_list)
 
     findSameSkuLogger.info('all batches was successfully finished task !!!')
