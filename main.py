@@ -66,12 +66,15 @@ def main():
         query_sql_list.append(query_sql)
 
     integer = length // 15 # 代表15个进程
+    if length > integer * 15:
+        integer += 1
 
     three_category_num = 0
     for batch in range(integer):
         three_category_num += 15
         start_index = batch * 15
-        if batch == integer - 1:
+        if three_category_num > length:
+            three_category_num -= 15
             sub_query_sql_list = query_sql_list[three_category_num:]
         else:
             sub_query_sql_list = query_sql_list[start_index:three_category_num]
