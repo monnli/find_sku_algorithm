@@ -4,6 +4,7 @@ import pandas as pd
 import pymongo
 from config import connection_string
 
+
 def get_mongodb_data(table_name, query_sentence):
     # 连接mongodb数据库
     database = pymongo.MongoClient(connection_string).get_database()

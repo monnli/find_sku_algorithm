@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from multiprocessing import Pool
-from model.tf_idf import CalculateSimi
+from model.tf_idf_无类目品牌过滤 import CalculateSimi
 import pymongo
 from config import *
 from read_write_mysql import write_to_mysql, query_data

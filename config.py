@@ -18,10 +18,10 @@ recent_ndays = 14
 
 if debug:
     normal_brand_names = pd.read_csv(
-        "C:\\Users\\29678\\Desktop\\voila_china\\find_sku_algorithm\\standardBrandName.csv",
+        "/standardBrandName.csv",
         encoding='utf-8-sig')
 else:
-    normal_brand_names = pd.read_csv("find_sku_algorithm/standardBrandName.csv", encoding='utf-8-sig')
+    normal_brand_names = pd.read_csv("find_sku_algorithm/standardBrandName_old.csv", encoding='utf-8-sig')
 
 
 query_sentence = [{"stdSubCateName": "Clothing", "stdSubCate2Name": "Coats & Jackets"},
@@ -37,10 +37,10 @@ price_weight = 0.2
 threshold = 0.9
 
 # 是否删除数字字符
-delete_digits=False
+delete_digits = False
 
 # 是否对词干处理
-process_stemmer=True
+process_stemmer = True
 
 # 连接mongodb配置
 connection_string = "mongodb://voiladata-readonly:PhieV1lu@172.31.141.244:30017/voila_gold"
@@ -56,7 +56,7 @@ unwant_antonym_array = [['long', 'short']]
 unwant_confusion_word = ['dress', 'mini', 'midi', 'coats', 'coat', '&', 'jackets', 'jacket']
 
 # 品牌名词校正数据路径
-brand_path = 'data/standardBrandName.csv'
+brand_path = 'data/standardBrandName_old.csv'
 
 # 常用颜色
 colors = ['red', 'blue', 'yellow', 'green', 'white', 'black', 'pink', 'purple', 'orange', 'brown', 'grey']

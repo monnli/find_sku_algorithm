@@ -21,7 +21,7 @@ def get_jaccard_simi(title_text, sub_df):
 class CalculateJaccardSimi(object):
     def __init__(self):
         pass
-    brand_names = pd.read_csv("data_process/standardBrandName.csv", encoding='utf-8-sig')
+    brand_names = pd.read_csv("data_process/standardBrandName_old.csv", encoding='utf-8-sig')
     query_sentence = [{"stdSubCateName": "Clothing", "stdSubCate2Name": "Coats & Jackets"},
                       {"_id": 0, 'spuId': 1, 'title': 1, 'canonicalUrl': 1, 'maxMsrp': 1,
                        'siteName': 1, 'stdCateName': 1, 'stdSubCateName': 1, 'stdSubCate2Name': 1, 'brandName': 1}]

@@ -60,7 +60,7 @@ if __name__ == '__main__':
 
         query_sql_list.append(query_sql)
 
-
+    df.reset_index()
 
 
 

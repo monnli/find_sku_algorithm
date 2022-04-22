@@ -160,7 +160,7 @@ def three_cate_simi(query_sentence):
 
 
 if __name__ == '__main__':
-    normal_brand_names = pd.read_csv("C:\\Users\\29678\\Desktop\\voila_china\\find_same_sku_algorithm\\standardBrandName.csv",
+    normal_brand_names = pd.read_csv("C:\\Users\\29678\\Desktop\\voila_china\\find_same_sku_algorithm\\standardBrandName_old.csv",
                                      encoding='utf-8-sig')
 
     query_sentence = [{"stdSubCateName": "Clothing", "stdSubCate2Name": "Coats & Jackets"},

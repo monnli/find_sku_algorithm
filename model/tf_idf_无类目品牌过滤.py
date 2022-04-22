@@ -81,15 +81,11 @@ class CalculateSimi(object):
         df['title2'] = np.array(['' for i in range(df.shape[0])])
         df['canonicalUrl2'] = np.array(['' for i in range(df.shape[0])])
 
-        df['siteName2'] = np.array(['' for i in range(df.shape[0])])
-
         start_time = time.time()
         length = df.shape[0]
         for row_index in range(length):
             siteName = df.loc[row_index, 'siteName']
             brandName = df.loc[row_index, 'brandName']
-            stdCateName = df.loc[row_index, 'stdCateName']
-            stdSubCateName = df.loc[row_index, 'stdSubCateName']
             maxMsrp = df.loc[row_index, 'maxMsrp']
             title_text = df.loc[row_index, 'title']
 
@@ -98,12 +94,17 @@ class CalculateSimi(object):
                 continue
 
             # 过滤条件
-            sub_df = df[df['stdCateName'] == stdCateName]
-            sub_df = sub_df[sub_df['stdSubCateName'] == stdSubCateName]
-            sub_df = sub_df[sub_df['siteName'] != siteName]
+            sub_df = df[df['siteName'] != siteName]
             sub_df = sub_df[sub_df['brandName'] == brandName]
             sub_df = sub_df[sub_df['updatedUtc'] >= date_point]
             sub_df = sub_df[sub_df['is_cal_tag'] != 1]
+            try:
+                sub_df['price_score'] = sub_df.apply(lambda x: min(maxMsrp, x['maxMsrp']) / max(maxMsrp, x['maxMsrp']), axis=1)
+                sub_df = sub_df[sub_df['price_score'] >= 0.9]
+            except Exception as e:
+                df.drop(row_index, inplace=True)
+                findSameSkuLogger.info(f"row_index: {row_index}")
+                continue
 
             if sub_df.shape[0] == 0:
                 df.drop(row_index, inplace=True)
@@ -120,10 +121,9 @@ class CalculateSimi(object):
                     max_score_row_index = 0
                     maxMsrp2 = 0
                     tfidf_simi_score = 0
-                    siteName2 = ''
                     for k, v in index_score_list:
                         p2 = sub_df.loc[k, 'maxMsrp']
-                        p_score = min(maxMsrp, p2) / max(maxMsrp, p2)
+                        p_score = sub_df.loc[k, 'price_score']
                         score = 0.5 * p_score + 0.5 * v
 
                         if score > max_score:
@@ -132,7 +132,6 @@ class CalculateSimi(object):
                             max_score_row_index = k
                             maxMsrp2 = p2
                             tfidf_simi_score = v
-                            siteName2 = sub_df.loc[k, 'siteName']
 
                     if (max_score >= threshold) and (price_score >= 0.9) and (tfidf_simi_score >= 0.9):
                         df.loc[row_index, 'score'] = max_score
@@ -150,7 +149,6 @@ class CalculateSimi(object):
                         df.loc[row_index, 'price_score'] = price_score
                         df.loc[row_index, 'maxMsrp2'] = maxMsrp2
                         df.loc[row_index, 'tfidf_simi_score'] = tfidf_simi_score
-                        df.loc[row_index, 'siteName2'] = siteName2
 
                         findSameSkuLogger.info(f"max_score_row_index: {max_score_row_index}||max_score: {max_score}")
                     else:
@@ -165,16 +163,12 @@ class CalculateSimi(object):
 
 if __name__ == '__main__':
 
-    # query_sentence = [{"stdSubCateName": "Clothing", "stdSubCate2Name": "Coats & Jackets"},
-    #                   {"_id": 0, 'spuId': 1, 'siteId': 1, 'title': 1, 'canonicalUrl': 1, 'maxMsrp': 1, 'siteName': 1,
-    #                    'stdCateName': 1, 'stdSubCateName': 1, 'stdSubCate2Name': 1, 'brandName': 1, 'updatedUtc': 1}]
-
     query_sentence = [{"stdSubCateName": "Clothing", "stdSubCate2Name": "Coats & Jackets"},
                       {"_id": 0, 'spuId': 1, 'siteId': 1, 'title': 1, 'canonicalUrl': 1, 'maxMsrp': 1, 'siteName': 1,
                        'stdCateName': 1, 'stdSubCateName': 1, 'stdSubCate2Name': 1, 'brandName': 1, 'updatedUtc': 1}]
     cs = CalculateSimi()
     df = cs.three_cate_simi(query_sentence)
-    df.to_excel("simi_result_tfidf_simi_price_study_filter_old.xlsx")
+    df.to_excel("simi_result_tfidf_simi_price_study_filter_new.xlsx")
 
 
 

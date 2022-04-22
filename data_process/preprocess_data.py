@@ -62,13 +62,12 @@ def process_title_data(product_data, brand_names):
     product_data['brandName'] = product_data.apply(lambda x: adjust_brand_name(x['brandName']), axis=1)
 
     # 添加品牌名词删除，品牌名是小写，title也要变小写
-    product_data['title'] = product_data.apply(lambda x: x['title'].lower(), axis=1)
+    product_data['title'] = product_data.apply(lambda x: (x['title'].lower()).strip(), axis=1)
     product_data['title'] = product_data.apply(lambda x: (x['title'].replace(x['brandName'], '')).strip(), axis=1)
 
 
-    # 删除站点名称——找同款找的是除本站外的其他站点的商品，因此站点不同的，该删除
     # 注意：站点名称还没有校正！！！
-    product_data['siteName'] = product_data.apply(lambda x: str(x['siteName']), axis=1)
+    product_data['siteName'] = product_data.apply(lambda x: (str(x['siteName']).lower()).strip(), axis=1)
     product_data['title'] = product_data.apply(lambda x: (x['title'].replace(x['siteName'], '')).strip(), axis=1)
 
     # 寻找同款商品要用全量数据，
