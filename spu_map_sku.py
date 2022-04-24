@@ -141,11 +141,11 @@ def spu_map_sku(df):
     return df
 
 
-
+#
 # if __name__ == '__main__':
-#     df = pd.read_excel("C:\\Users\\29678\Desktop\\voila_china\\find_sku_algorithm\\model\\simi_result_tfidf_simi_price_study_specs.xlsx")
+#     df = pd.read_excel("C:\\Users\\29678\Desktop\\voila_china\\find_sku_algorithm\\model\\spu_match_stdSubCate2Name_Pants.xlsx")
 #     df = spu_map_sku(df)
-#     df.to_excel("coat_jacket_sku_specs所有匹配对_8.xlsx")
+#     df.to_excel("sku_match_stdSubCate2Name_Pants.xlsx")
 
 
 

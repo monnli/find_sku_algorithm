@@ -18,8 +18,7 @@ recent_ndays = 14
 
 if debug:
     normal_brand_names = pd.read_csv(
-        "/standardBrandName.csv",
-        encoding='utf-8-sig')
+        "C:\\Users\\29678\\Desktop\\voila_china\\find_sku_algorithm\\standardBrandName.csv", encoding='gbk')
 else:
     normal_brand_names = pd.read_csv("find_sku_algorithm/standardBrandName_old.csv", encoding='utf-8-sig')
 
@@ -37,10 +36,10 @@ price_weight = 0.2
 threshold = 0.9
 
 # 是否删除数字字符
-delete_digits = False
+delete_digits=False
 
 # 是否对词干处理
-process_stemmer = True
+process_stemmer=True
 
 # 连接mongodb配置
 connection_string = "mongodb://voiladata-readonly:PhieV1lu@172.31.141.244:30017/voila_gold"

@@ -166,6 +166,10 @@ if __name__ == '__main__':
     query_sentence = [{"stdSubCateName": "Clothing", "stdSubCate2Name": "Coats & Jackets"},
                       {"_id": 0, 'spuId': 1, 'siteId': 1, 'title': 1, 'canonicalUrl': 1, 'maxMsrp': 1, 'siteName': 1,
                        'stdCateName': 1, 'stdSubCateName': 1, 'stdSubCate2Name': 1, 'brandName': 1, 'updatedUtc': 1}]
+    # query_sentence = [{"siteName": "Alice  + Olivia"},
+    #                   {"_id": 0, 'spuId': 1, 'siteId': 1, 'title': 1, 'canonicalUrl': 1, 'maxMsrp': 1, 'siteName': 1,
+    #                    'stdCateName': 1, 'stdSubCateName': 1, 'stdSubCate2Name': 1, 'brandName': 1, 'updatedUtc': 1}]
+
     cs = CalculateSimi()
     df = cs.three_cate_simi(query_sentence)
     df.to_excel("simi_result_tfidf_simi_price_study_filter_new.xlsx")

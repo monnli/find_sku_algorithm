@@ -7,6 +7,7 @@ from config import *
 from read_write_mysql import write_to_mysql, query_data
 from spu_map_sku import spu_map_sku
 import pandas as pd
+import time
 
 
 def multiprocessing_calculate(batch, sub_query_sql_list):
@@ -92,34 +93,6 @@ def main():
 
 
 if __name__ == '__main__':
+    start_time = time.time()
     main()
-
-    # cs = CalculateSimi()
-    # pool = Pool(15)
-    # result_list = list()
-    # if debug:
-    #     epoch = 2
-    # else:
-    #     epoch = df.shape[0]
-    # for i in range(epoch):
-    #     stdCateName = df.iloc[i, 0]
-    #     stdSubCateName = df.iloc[i, 1]
-    #     stdSubCate2Name = df.iloc[i, 2]
-    #     query_sql = [{"stdCateName": stdCateName, "stdSubCateName": stdSubCateName,
-    #                   "stdSubCate2Name": stdSubCate2Name},
-    #                  {"_id": 0, 'spuId': 1, 'title': 1, 'canonicalUrl': 1, 'maxMsrp': 1, 'siteName': 1,
-    #                   'stdCateName': 1, 'stdSubCateName': 1, 'stdSubCate2Name': 1, 'brandName': 1, 'updatedUtc': 1}]
-    #     result = pool.apply_async(cs.three_cate_simi, (query_sql,))
-    #     result_list.append(result)
-    #     findSameSkuLogger.info(f"{i} || {stdCateName} || {stdSubCateName} || {stdSubCate2Name}")
-    # pool.close()
-    # pool.join()
-    # count = 0
-    # for rs in result_list:
-    #     df = spu_map_sku(rs.get())
-    #     df.to_csv('')
-    #     write_to_mysql(df)
-    #     count += 1
-    #     findSameSkuLogger.info(f"successfully write to tibd: {count}")
-    # findSameSkuLogger.info('successfully finish task !!!')
-
+    findSameSkuLogger.info(f"usefull total time: {(time.time() - start_time)/3600} hours")

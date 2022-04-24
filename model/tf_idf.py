@@ -87,9 +87,10 @@ class CalculateSimi(object):
         length = df.shape[0]
         for row_index in range(length):
             siteName = df.loc[row_index, 'siteName']
+            siteId = df.loc[row_index, 'siteId']
             brandName = df.loc[row_index, 'brandName']
-            stdCateName = df.loc[row_index, 'stdCateName']
-            stdSubCateName = df.loc[row_index, 'stdSubCateName']
+            # stdCateName = df.loc[row_index, 'stdCateName']
+            # stdSubCateName = df.loc[row_index, 'stdSubCateName']
             maxMsrp = df.loc[row_index, 'maxMsrp']
             title_text = df.loc[row_index, 'title']
 
@@ -98,12 +99,26 @@ class CalculateSimi(object):
                 continue
 
             # 过滤条件
-            sub_df = df[df['stdCateName'] == stdCateName]
-            sub_df = sub_df[sub_df['stdSubCateName'] == stdSubCateName]
-            sub_df = sub_df[sub_df['siteName'] != siteName]
+            sub_df = df[df['siteId'] != siteId]
             sub_df = sub_df[sub_df['brandName'] == brandName]
             sub_df = sub_df[sub_df['updatedUtc'] >= date_point]
             sub_df = sub_df[sub_df['is_cal_tag'] != 1]
+            try:
+                sub_df['price_score'] = sub_df.apply(lambda x: min(maxMsrp, x['maxMsrp']) / max(maxMsrp, x['maxMsrp']),
+                                                     axis=1)
+                sub_df = sub_df[sub_df['price_score'] >= 0.9]
+            except Exception as e:
+                df.drop(row_index, inplace=True)
+                findSameSkuLogger.info(f"row_index: {row_index}")
+                continue
+
+            # # 过滤条件
+            # sub_df = df[df['stdCateName'] == stdCateName]
+            # sub_df = sub_df[sub_df['stdSubCateName'] == stdSubCateName]
+            # sub_df = sub_df[sub_df['siteId'] != siteId]
+            # sub_df = sub_df[sub_df['brandName'] == brandName]
+            # sub_df = sub_df[sub_df['updatedUtc'] >= date_point]
+            # sub_df = sub_df[sub_df['is_cal_tag'] != 1]
 
             if sub_df.shape[0] == 0:
                 df.drop(row_index, inplace=True)
@@ -168,8 +183,8 @@ if __name__ == '__main__':
     # query_sentence = [{"stdSubCateName": "Clothing", "stdSubCate2Name": "Coats & Jackets"},
     #                   {"_id": 0, 'spuId': 1, 'siteId': 1, 'title': 1, 'canonicalUrl': 1, 'maxMsrp': 1, 'siteName': 1,
     #                    'stdCateName': 1, 'stdSubCateName': 1, 'stdSubCate2Name': 1, 'brandName': 1, 'updatedUtc': 1}]
-
-    query_sentence = [{"stdSubCateName": "Clothing", "stdSubCate2Name": "Coats & Jackets"},
+    #  Coats & Jackets
+    query_sentence = [{"stdSubCateName": "Clothing", "stdSubCate2Name": "Pants"},
                       {"_id": 0, 'spuId': 1, 'siteId': 1, 'title': 1, 'canonicalUrl': 1, 'maxMsrp': 1, 'siteName': 1,
                        'stdCateName': 1, 'stdSubCateName': 1, 'stdSubCate2Name': 1, 'brandName': 1, 'updatedUtc': 1}]
     cs = CalculateSimi()
