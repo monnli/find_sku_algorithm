@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from multiprocessing import Pool
-from model.tf_idf_无类目品牌过滤 import CalculateSimi
+from model.tf_idf import CalculateSimi
 import pymongo
 from config import *
 from read_write_mysql import write_to_mysql, query_data
@@ -26,8 +26,11 @@ def multiprocessing_calculate(batch, sub_query_sql_list):
         count = 0
         for rs in result_list:
             df = spu_map_sku(rs.get())
-            df.to_csv(f'/data/limeng/result_{batch}_{count}.csv') # 由于此步计算大，避免下游任务出错中断程序时，能快速恢复结果
-            write_to_mysql(df)
+            if debug:
+                df.to_csv(f'result_{batch}_{count}.csv')
+            else:
+                df.to_csv(f'/data/limeng/result_{batch}_{count}.csv') # 由于此步计算大，避免下游任务出错中断程序时，能快速恢复结果
+                write_to_mysql(df)
             count += 1
             findSameSkuLogger.info(f"successfully write to tibd: |batch:{batch} | time:{count}")
 
@@ -53,8 +56,10 @@ def main():
     df = df[df.stdSubCate2Name.notnull()]
 
     findSameSkuLogger.info("******************start multiprocessing****************")
-
-    length = df.shape[0]
+    if debug:
+        length = 2
+    else:
+        length = df.shape[0]
     query_sql_list = list()
     for i in range(length):
         one_name = df.iloc[i, 0]

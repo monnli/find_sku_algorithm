@@ -98,6 +98,9 @@ class CalculateSimi(object):
                 df.drop(row_index, inplace=True)
                 continue
 
+            if df.loc[row_index, 'spuId'] == '5c5090d1ea7cbeb043717a93653938a8':
+                print('5c5090d1ea7cbeb043717a93653938a8')
+
             # 过滤条件
             sub_df = df[df['siteId'] != siteId]
             sub_df = sub_df[sub_df['brandName'] == brandName]
@@ -184,12 +187,12 @@ if __name__ == '__main__':
     #                   {"_id": 0, 'spuId': 1, 'siteId': 1, 'title': 1, 'canonicalUrl': 1, 'maxMsrp': 1, 'siteName': 1,
     #                    'stdCateName': 1, 'stdSubCateName': 1, 'stdSubCate2Name': 1, 'brandName': 1, 'updatedUtc': 1}]
     #  Coats & Jackets
-    query_sentence = [{"stdSubCateName": "Clothing", "stdSubCate2Name": "Pants"},
+    query_sentence = [{"stdSubCateName": "Clothing", "stdSubCate2Name": "Coats & Jackets"},
                       {"_id": 0, 'spuId': 1, 'siteId': 1, 'title': 1, 'canonicalUrl': 1, 'maxMsrp': 1, 'siteName': 1,
                        'stdCateName': 1, 'stdSubCateName': 1, 'stdSubCate2Name': 1, 'brandName': 1, 'updatedUtc': 1}]
     cs = CalculateSimi()
     df = cs.three_cate_simi(query_sentence)
-    df.to_excel("simi_result_tfidf_simi_price_study_filter_old.xlsx")
+    df.to_excel("simi_result_tfidf_simi_price_Coats_Jackets.xlsx")
 
 
 
