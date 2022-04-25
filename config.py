@@ -20,7 +20,8 @@ if debug:
     normal_brand_names = pd.read_csv(
         "C:\\Users\\29678\\Desktop\\voila_china\\find_sku_algorithm\\standardBrandName.csv", encoding='gbk')
 else:
-    normal_brand_names = pd.read_csv("find_sku_algorithm/standardBrandName.csv", encoding='utf-8-sig')
+    # normal_brand_names = pd.read_csv("find_sku_algorithm/standardBrandName.csv", encoding='utf-8-sig')
+    normal_brand_names = pd.read_csv("find_sku_algorithm/standardBrandName.csv", encoding='gbk')
 
 
 query_sentence = [{"stdSubCateName": "Clothing", "stdSubCate2Name": "Coats & Jackets"},
