@@ -7,11 +7,11 @@ from nltk.corpus import stopwords
 from config import unwant_confusion_word
 from config import delete_digits, process_stemmer
 from config import spu_table_name
-from config import colors
+from config import colors, brand_name_pairs
 import copy
 
 
-def process_text_data(text):
+def process_sentence(text):
     # 去除标点符号
     tokenizer = nltk.RegexpTokenizer(r"\w+")
     text = tokenizer.tokenize(text.lower())
@@ -39,32 +39,26 @@ def process_text_data(text):
     return text
 
 
-def process_title_data(product_data, brand_names):
-    # product_data = product_data[product_data['stdCateName'].notnull()]
-    # product_data = product_data[product_data['stdSubCateName'].notnull()]
+def adjust_brand_name(raw_brand_name, brand_name_pairs):
+    for brand_pair in brand_name_pairs:
+        if raw_brand_name in brand_pair:
+            return brand_pair[0]
+    return str(raw_brand_name).lower()
+
+
+def process_title_data(product_data, brand_name_pairs):
     product_data = product_data[product_data['siteName'].notnull()]
     product_data = product_data[product_data['brandName'].notnull()]
 
     # 增加原始标题便于数据分析和查找
     product_data['raw_title'] = product_data['title']
-    # 读取品牌映射信息
-    right_brand_name = brand_names['correct_brand_name'].to_list()
-    wrong_brand_name = brand_names['wrong_brand_name'].to_list()
-    brand_name_pairs = zip(right_brand_name, wrong_brand_name)
-
-    def adjust_brand_name(raw_brand_name):
-        for brand_pair in brand_name_pairs:
-            if raw_brand_name in brand_pair:
-                return brand_pair[0]
-        return str(raw_brand_name).lower()
 
     # 校正品牌名词, 校正后的brandName是小写的
-    product_data['brandName'] = product_data.apply(lambda x: adjust_brand_name(x['brandName']), axis=1)
+    product_data['brandName'] = product_data.apply(lambda x: adjust_brand_name(x['brandName'], brand_name_pairs), axis=1)
 
     # 添加品牌名词删除，品牌名是小写，title也要变小写
     product_data['title'] = product_data.apply(lambda x: (x['title'].lower()).strip(), axis=1)
     product_data['title'] = product_data.apply(lambda x: (x['title'].replace(x['brandName'], '')).strip(), axis=1)
-
 
     # 注意：站点名称还没有校正！！！
     product_data['siteName'] = product_data.apply(lambda x: (str(x['siteName']).lower()).strip(), axis=1)
@@ -76,9 +70,9 @@ def process_title_data(product_data, brand_names):
     product_data = product_data.drop_duplicates(subset='title', keep='first', inplace=False)
 
     # 清洗文本数据
-    product_data['title'] = product_data.apply(lambda x: process_text_data(x['title']), axis=1)
+    product_data['title'] = product_data.apply(lambda x: process_sentence(x['title']), axis=1)
 
-    product_full_data['title'] = product_full_data.apply(lambda x: process_text_data(x['title']), axis=1)
+    product_full_data['title'] = product_full_data.apply(lambda x: process_sentence(x['title']), axis=1)
 
     return product_data, product_full_data
 
@@ -89,4 +83,4 @@ if __name__ == '__main__':
                        'currency': 1, 'canonicalUrl': 1, 'minCurrent': 1, 'maxCurrent': 1, 'minMsrp': 1,
                        'siteName': 1, 'brandName': 1}]
 
-    process_title_data(spu_table_name, query_sentence)
+    process_title_data(spu_table_name, brand_name_pairs)

@@ -22,7 +22,17 @@ if debug:
 else:
     # normal_brand_names = pd.read_csv("find_sku_algorithm/standardBrandName.csv", encoding='utf-8-sig')
     normal_brand_names = pd.read_csv("find_sku_algorithm/standardBrandName.csv", encoding='gbk')
+# 读取品牌映射信息
+right_brand_name = normal_brand_names['correct_brand_name'].to_list()
+wrong_brand_name = normal_brand_names['wrong_brand_name'].to_list()
+brand_name_pairs = zip(right_brand_name, wrong_brand_name)
 
+# new brandName mapping to old brandName
+new_mapping_old_brandName = dict()
+for name in normal_brand_names.correct_brand_name.unique().tolist():
+    sub_normal_brand_names = normal_brand_names[normal_brand_names.correct_brand_name == name]
+    tmp_brand_list = sub_normal_brand_names.wrong_brand_name.tolist()
+    new_mapping_old_brandName[name] = tmp_brand_list
 
 query_sentence = [{"stdSubCateName": "Clothing", "stdSubCate2Name": "Coats & Jackets"},
                   {"_id": 0, 'spuId': 1, 'title': 1, 'canonicalUrl': 1, 'maxMsrp': 1, 'siteName': 1,

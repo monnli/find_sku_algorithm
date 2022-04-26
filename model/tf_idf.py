@@ -52,7 +52,7 @@ class CalculateSimi(object):
 
         product_data = get_mongodb_data(spu_table_name, query_sentence)
 
-        product_data, product_full_data = process_title_data(product_data, normal_brand_names)
+        product_data, product_full_data = process_title_data(product_data, brand_name_pairs)
         tfidf_model, dictionary = train_tfidf(product_data)
 
         df = copy.deepcopy(product_full_data)
@@ -86,11 +86,8 @@ class CalculateSimi(object):
         start_time = time.time()
         length = df.shape[0]
         for row_index in range(length):
-            # siteName = df.loc[row_index, 'siteName']
             siteId = df.loc[row_index, 'siteId']
             brandName = df.loc[row_index, 'brandName']
-            # stdCateName = df.loc[row_index, 'stdCateName']
-            # stdSubCateName = df.loc[row_index, 'stdSubCateName']
             maxMsrp = df.loc[row_index, 'maxMsrp']
             title_text = df.loc[row_index, 'title']
 
@@ -111,14 +108,6 @@ class CalculateSimi(object):
                 df.drop(row_index, inplace=True)
                 findSameSkuLogger.info(f"row_index: {row_index}")
                 continue
-
-            # # 过滤条件
-            # sub_df = df[df['stdCateName'] == stdCateName]
-            # sub_df = sub_df[sub_df['stdSubCateName'] == stdSubCateName]
-            # sub_df = sub_df[sub_df['siteId'] != siteId]
-            # sub_df = sub_df[sub_df['brandName'] == brandName]
-            # sub_df = sub_df[sub_df['updatedUtc'] >= date_point]
-            # sub_df = sub_df[sub_df['is_cal_tag'] != 1]
 
             if sub_df.shape[0] == 0:
                 df.drop(row_index, inplace=True)

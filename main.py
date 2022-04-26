@@ -5,6 +5,7 @@ from model.tf_idf import CalculateSimi
 import pymongo
 from config import *
 from read_write_mysql import write_to_mysql, query_data
+from data_process.preprocess_data import adjust_brand_name
 from spu_map_sku import spu_map_sku
 import pandas as pd
 import time
@@ -29,7 +30,7 @@ def multiprocessing_calculate(batch, sub_query_sql_list):
             if debug:
                 df.to_csv(f'result_{batch}_{count}.csv')
             else:
-                df.to_csv(f'/data/limeng/result_{batch}_{count}.csv') # 由于此步计算大，避免下游任务出错中断程序时，能快速恢复结果
+                df.to_csv(f'/data/limeng/sim_result/result_{batch}_{count}.csv') # 由于此步计算大，避免下游任务出错中断程序时，能快速恢复结果
                 write_to_mysql(df)
             count += 1
             findSameSkuLogger.info(f"successfully write to tibd: |batch:{batch} | time:{count}")
@@ -48,38 +49,26 @@ def main():
     # 数据表
     coll = database.get_collection('spu')
 
-    df = pd.DataFrame(list(coll.find({}, {"_id": 0, 'siteId': 1, 'stdCateName': 1, 'stdSubCateName': 1, 'stdSubCate2Name': 1})))
+    df = pd.DataFrame(list(coll.find({}, {"_id": 0, 'siteId': 1, 'stdCateName': 1, 'brandName': 1, })))
     findSameSkuLogger.info(df.head())
-    # df = df.drop_duplicates()
-    # df = df[df.stdCateName.notnull()]
-    # df = df[df.stdSubCateName.notnull()]
-    # df = df[df.stdSubCate2Name.notnull()]
-    # findSameSkuLogger.info("******************start multiprocessing****************")
-    # if debug:
-    #     length = 2
-    # else:
-    #     length = df.shape[0]
-    # query_sql_list = list()
-    # for i in range(length):
-    #     one_name = df.iloc[i, 0]
-    #
-    #     query_sql = [{"stdCateName": one_name, "stdSubCateName": two_name, "stdSubCate2Name": three_name},
-    #                  {"_id": 0, 'spuId': 1, 'siteId': 1, 'title': 1, 'canonicalUrl': 1, 'maxMsrp': 1, 'siteName': 1,
-    #                   'stdCateName': 1, 'stdSubCateName': 1, 'stdSubCate2Name': 1, 'brandName': 1, 'updatedUtc': 1}]
-    #     query_sql_list.append(query_sql)
+    df = df[df.brandName.notnull()]
 
-    df = df[df.siteId.notnull()]
-    site_list = df.siteId.unique().tolist()
+    useful_brand = list()
+    for k, v in new_mapping_old_brandName.items():
+        sub_df = df[df.brandName.isin(v)]
+        if sub_df.shape[0] > 1:
+            if sub_df.siteId.unique().shape[0] > 1:
+                useful_brand.append(v)
+
     findSameSkuLogger.info("******************start multiprocessing****************")
     if debug:
         length = 2
     else:
-        length = len(site_list)
+        length = len(useful_brand)
     query_sql_list = list()
     for i in range(length):
-        site_id = site_list[i]
-
-        query_sql = [{"siteId": site_id},
+        brandName = useful_brand[i]
+        query_sql = [{"brandName": {"$in": brandName}},
                      {"_id": 0, 'spuId': 1, 'siteId': 1, 'title': 1, 'canonicalUrl': 1, 'maxMsrp': 1, 'siteName': 1,
                       'stdCateName': 1, 'stdSubCateName': 1, 'stdSubCate2Name': 1, 'brandName': 1, 'updatedUtc': 1}]
         query_sql_list.append(query_sql)
