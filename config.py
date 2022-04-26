@@ -2,7 +2,7 @@
 import os
 import logging.config
 import pandas as pd
-import pymysql
+from datetime import datetime
 
 import os
 
@@ -72,7 +72,7 @@ brand_path = 'data/standardBrandName_old.csv'
 colors = ['red', 'blue', 'yellow', 'green', 'white', 'black', 'pink', 'purple', 'orange', 'brown', 'grey']
 
 
-
+now_date = datetime.now().date()
 # 日志配置
 LOGGING_CONF = {
     'version': 1,
@@ -92,7 +92,7 @@ LOGGING_CONF = {
         'find_sku_algorithm': {
             'level': 'INFO',
             'class': 'logging.FileHandler',
-            'filename': os.path.join(base_dir, 'find_sku_algorithm.log'),
+            'filename': os.path.join(base_dir, 'find_sku_algorithm' + str(now_date) + '.log'),
             'formatter': 'verbose',
         },
 

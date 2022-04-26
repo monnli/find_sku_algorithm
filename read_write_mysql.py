@@ -10,7 +10,8 @@ from config import debug, findSameSkuLogger
 
 def write_to_mysql(df):
     """ write_type: 'append' """
-    now_date = datetime.now().date()
+    # now_date = datetime.now().date()
+    now_date = datetime.now()
 
     engine = create_engine("mysql+pymysql://similarity:ye6Iep8S@172.31.141.244:31545/voila_similarity?charset=utf8")
 
