@@ -48,25 +48,38 @@ def main():
     # 数据表
     coll = database.get_collection('spu')
 
-    df = pd.DataFrame(list(coll.find({}, {"_id": 0, 'stdCateName': 1, 'stdSubCateName': 1, 'stdSubCate2Name': 1})))
+    df = pd.DataFrame(list(coll.find({}, {"_id": 0, 'siteId': 1, 'stdCateName': 1, 'stdSubCateName': 1, 'stdSubCate2Name': 1})))
     findSameSkuLogger.info(df.head())
-    df = df.drop_duplicates()
-    df = df[df.stdCateName.notnull()]
-    df = df[df.stdSubCateName.notnull()]
-    df = df[df.stdSubCate2Name.notnull()]
+    # df = df.drop_duplicates()
+    # df = df[df.stdCateName.notnull()]
+    # df = df[df.stdSubCateName.notnull()]
+    # df = df[df.stdSubCate2Name.notnull()]
+    # findSameSkuLogger.info("******************start multiprocessing****************")
+    # if debug:
+    #     length = 2
+    # else:
+    #     length = df.shape[0]
+    # query_sql_list = list()
+    # for i in range(length):
+    #     one_name = df.iloc[i, 0]
+    #
+    #     query_sql = [{"stdCateName": one_name, "stdSubCateName": two_name, "stdSubCate2Name": three_name},
+    #                  {"_id": 0, 'spuId': 1, 'siteId': 1, 'title': 1, 'canonicalUrl': 1, 'maxMsrp': 1, 'siteName': 1,
+    #                   'stdCateName': 1, 'stdSubCateName': 1, 'stdSubCate2Name': 1, 'brandName': 1, 'updatedUtc': 1}]
+    #     query_sql_list.append(query_sql)
 
+    df = df[df.siteId.notnull()]
+    site_list = df.siteId.unique().tolist()
     findSameSkuLogger.info("******************start multiprocessing****************")
     if debug:
         length = 2
     else:
-        length = df.shape[0]
+        length = len(site_list)
     query_sql_list = list()
     for i in range(length):
-        one_name = df.iloc[i, 0]
-        two_name = df.iloc[i, 1]
-        three_name = df.iloc[i, 2]
+        site_id = site_list[i]
 
-        query_sql = [{"stdCateName": one_name, "stdSubCateName": two_name, "stdSubCate2Name": three_name},
+        query_sql = [{"siteId": site_id},
                      {"_id": 0, 'spuId': 1, 'siteId': 1, 'title': 1, 'canonicalUrl': 1, 'maxMsrp': 1, 'siteName': 1,
                       'stdCateName': 1, 'stdSubCateName': 1, 'stdSubCate2Name': 1, 'brandName': 1, 'updatedUtc': 1}]
         query_sql_list.append(query_sql)

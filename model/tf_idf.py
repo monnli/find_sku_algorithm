@@ -86,7 +86,7 @@ class CalculateSimi(object):
         start_time = time.time()
         length = df.shape[0]
         for row_index in range(length):
-            siteName = df.loc[row_index, 'siteName']
+            # siteName = df.loc[row_index, 'siteName']
             siteId = df.loc[row_index, 'siteId']
             brandName = df.loc[row_index, 'brandName']
             # stdCateName = df.loc[row_index, 'stdCateName']
@@ -97,9 +97,6 @@ class CalculateSimi(object):
             if title_text == None or title_text == '':
                 df.drop(row_index, inplace=True)
                 continue
-
-            if df.loc[row_index, 'spuId'] == '5c5090d1ea7cbeb043717a93653938a8':
-                print('5c5090d1ea7cbeb043717a93653938a8')
 
             # 过滤条件
             sub_df = df[df['siteId'] != siteId]

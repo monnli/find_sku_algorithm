@@ -40,8 +40,8 @@ def process_text_data(text):
 
 
 def process_title_data(product_data, brand_names):
-    product_data = product_data[product_data['stdCateName'].notnull()]
-    product_data = product_data[product_data['stdSubCateName'].notnull()]
+    # product_data = product_data[product_data['stdCateName'].notnull()]
+    # product_data = product_data[product_data['stdSubCateName'].notnull()]
     product_data = product_data[product_data['siteName'].notnull()]
     product_data = product_data[product_data['brandName'].notnull()]
 
