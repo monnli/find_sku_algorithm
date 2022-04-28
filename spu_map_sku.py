@@ -106,16 +106,18 @@ def match_sku(df, result_dict, match_type):
                             pass
 
                         if (no_color_match == 1) or (color_name1_success == 1) or (color_name2_success == 1):
-                            result_dict['query_id'].append(sku1)
-                            result_dict['result_id'].append(sku2)
-                            result_dict['weighted_score'].append(df.loc[i, "score"])
-                            result_dict['title_score'].append(df.loc[i, "tfidf_simi_score"])
-                            result_dict['query_url'].append(sub_df1.loc[j, "canonicalUrl"])
-                            result_dict['result_url'].append(sub_df2.loc[k, "canonicalUrl"])
-                            result_dict['stdCateName'].append(df.loc[i, "stdCateName"])
-                            result_dict['stdSubCateName'].append(df.loc[i, "stdSubCateName"])
-                            result_dict['stdSubCate2Name'].append(df.loc[i, "stdSubCate2Name"])
-                            break
+                            result_url = sub_df2.loc[k, "canonicalUrl"]
+                            if result_url:
+                                result_dict['result_url'].append(sub_df2.loc[k, "canonicalUrl"])
+                                result_dict['query_id'].append(result_url)
+                                result_dict['result_id'].append(sku2)
+                                result_dict['weighted_score'].append(df.loc[i, "score"])
+                                result_dict['title_score'].append(df.loc[i, "tfidf_simi_score"])
+                                result_dict['query_url'].append(sub_df1.loc[j, "canonicalUrl"])
+                                result_dict['stdCateName'].append(df.loc[i, "stdCateName"])
+                                result_dict['stdSubCateName'].append(df.loc[i, "stdSubCateName"])
+                                result_dict['stdSubCate2Name'].append(df.loc[i, "stdSubCate2Name"])
+                                break
             else:
                 continue
         except Exception as e:
@@ -141,9 +143,8 @@ def spu_map_sku(df):
     return df
 
 
-
 if __name__ == '__main__':
-    df = pd.read_excel("C:\\Users\\29678\Desktop\\voila_china\\find_sku_algorithm\\model\\simi_result_tfidf_simi_price_Coats_Jackets.xlsx")
+    df = pd.read_excel("C:\\Users\\29678\Desktop\\voila_china\\find_sku_algorithm\\model\\simi_result_tfidf_simi_price_Dress.xlsx")
     df = spu_map_sku(df)
     df.to_excel("sku_match_Coats_Jackets.xlsx")
 

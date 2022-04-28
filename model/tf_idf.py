@@ -173,12 +173,12 @@ if __name__ == '__main__':
     #                   {"_id": 0, 'spuId': 1, 'siteId': 1, 'title': 1, 'canonicalUrl': 1, 'maxMsrp': 1, 'siteName': 1,
     #                    'stdCateName': 1, 'stdSubCateName': 1, 'stdSubCate2Name': 1, 'brandName': 1, 'updatedUtc': 1}]
     #  Coats & Jackets
-    query_sentence = [{"stdSubCateName": "Clothing", "stdSubCate2Name": "Coats & Jackets"},
+    query_sentence = [{"stdSubCateName": "Clothing", "stdSubCate2Name": "Dress"},
                       {"_id": 0, 'spuId': 1, 'siteId': 1, 'title': 1, 'canonicalUrl': 1, 'maxMsrp': 1, 'siteName': 1,
                        'stdCateName': 1, 'stdSubCateName': 1, 'stdSubCate2Name': 1, 'brandName': 1, 'updatedUtc': 1}]
     cs = CalculateSimi()
     df = cs.three_cate_simi(query_sentence)
-    df.to_excel("simi_result_tfidf_simi_price_Coats_Jackets.xlsx")
+    df.to_excel("simi_result_tfidf_simi_price_Dress.xlsx")
 
 
 
